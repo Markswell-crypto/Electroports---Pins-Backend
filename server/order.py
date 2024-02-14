@@ -36,3 +36,6 @@ class OrderItemResource(Resource):
             }
         else:
             return {'message': 'Order Item not found'}, 404
+        
+api.add_resource(OrderResource, '/order/<int:order_id>')
+api.add_resource(OrderItemResource, '/orderitem/<int:item_id>')
