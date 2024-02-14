@@ -22,3 +22,17 @@ class OrderResource(Resource):
             }
         else:
             return {'message': 'Order not found'}, 404
+        
+class OrderItemResource(Resource):
+    def get(self, item_id):
+        item = OrderItem.query.get(item_id)
+        if item:
+            return {
+                'id': item.id,
+                'component_type': item.component_type,
+                'component_id': item.component_id,
+                'order_id': item.order_id,
+                'quantity': item.quantity
+            }
+        else:
+            return {'message': 'Order Item not found'}, 404
