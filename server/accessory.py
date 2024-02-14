@@ -45,4 +45,5 @@ class AccessoryByIDResource(Resource):
 
         db.session.commit()
 
-        return {"access
+        return {"accessory": {"id": accessory.id, "name": accessory.name,
+                              "price": accessory.price}}
