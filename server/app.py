@@ -5,10 +5,13 @@ from flask_restful import Api
 from flask_jwt_extended import JWTManager
 from flask_migrate import Migrate
 from models import db
+from user import UserRegistrationResource, UserLoginResource, UserResource
 from brand import BrandsResource, BrandByIDResource
 from laptop import LaptopsResource, LaptopByIDResource
 from phone import PhonesResource, PhoneByIDResource
 from accessory import AccessoriesResource, AccessoryByIDResource
+from order import OrdersResource, OrderByIDResource
+
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///electro.db'
@@ -28,10 +31,9 @@ jwt = JWTManager(app)
 api = Api(app)
 CORS(app)
 
-
-if __name__ == '__main__':
-    app.run(port=5500, debug=True)
-
+api.add_resource(UserRegistrationResource, '/register')
+api.add_resource(UserLoginResource, '/login')
+api.add_resource(UserResource, '/user')
 api.add_resource(BrandsResource, '/brands')
 api.add_resource(BrandByIDResource, '/brands/<int:id>')
 api.add_resource(LaptopsResource, '/laptops')
@@ -40,3 +42,8 @@ api.add_resource(PhonesResource, '/phones')
 api.add_resource(PhoneByIDResource, '/phones/<int:id>')
 api.add_resource(AccessoriesResource, '/accessories')
 api.add_resource(AccessoryByIDResource, '/accessories/<int:id>')
+api.add_resource(OrdersResource, '/orders')
+api.add_resource(OrderByIDResource, '/orders/<int:id>')
+
+if __name__ == '__main__':
+    app.run(port=5500, debug=True)
