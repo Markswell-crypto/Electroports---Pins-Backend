@@ -1,7 +1,7 @@
 from flask import request
 from flask_restful import Resource
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
-from .models import db, User
+from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
+from models import db, User, bcrypt
 
 class UserRegistrationResource(Resource):
     def post(self):
@@ -18,7 +18,8 @@ class UserRegistrationResource(Resource):
             if existing_user:
                 return {"error": "Username is already taken."}, 400
 
-            new_user = User(username=username, password=password, role=role)
+            hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
+            new_user = User(username=username, password=hashed_password, role=role)
             db.session.add(new_user)
             db.session.commit()
             return {"message": "User registered successfully."}, 201
@@ -33,7 +34,7 @@ class UserLoginResource(Resource):
             password = data.get('password')
 
             user = User.query.filter_by(username=username).first()
-            if user and user.check_password(password):
+            if user and bcrypt.check_password_hash(user.password, password):
                 access_token = create_access_token(identity=username)
                 return {"access_token": access_token}, 200
             else:
