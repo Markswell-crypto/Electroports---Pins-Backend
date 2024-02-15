@@ -20,6 +20,7 @@ class User(db.Model, SerializerMixin):
 class Brand(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
+    logo_url = db.Column(db.String(255), nullable=True)  
 
 class Laptop(db.Model, SerializerMixin):
     NEW = 'new'
@@ -34,6 +35,7 @@ class Laptop(db.Model, SerializerMixin):
     name = db.Column(db.String(100), nullable=False)
     price = db.Column(db.Integer, nullable=False)
     status = db.Column(db.String(10), nullable=False)
+    image_url = db.Column(db.String(255), nullable=True)  
 
     brand = db.relationship('Brand', backref=db.backref('laptops', lazy=True))
 
@@ -50,6 +52,7 @@ class Phone(db.Model, SerializerMixin):
     name = db.Column(db.String(100), nullable=False)
     price = db.Column(db.Integer, nullable=False)
     status = db.Column(db.String(10), nullable=False)
+    image_url = db.Column(db.String(255), nullable=True)  
 
     brand = db.relationship('Brand', backref=db.backref('phones', lazy=True))
 
@@ -57,11 +60,14 @@ class Accessory(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     price = db.Column(db.Integer, nullable=False)
+    image_url = db.Column(db.String(255), nullable=True)  
 
 class SoundDevice(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     price = db.Column(db.Integer, nullable=False)
+    image_url = db.Column(db.String(255), nullable=True)  
+
 
 class Order(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
