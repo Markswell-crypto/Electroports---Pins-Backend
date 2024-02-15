@@ -35,3 +35,14 @@ class OrderByIDResource(Resource):
             }
         else:
             return {'message': 'Order not found'}, 404
+
+    def delete(self, id):
+        order = Order.query.get(id)
+
+        if not order:
+            return {"message": "Order not found."}, 404
+
+        db.session.delete(order)
+        db.session.commit()
+
+        return {"message": "Order deleted successfully."}, 204
