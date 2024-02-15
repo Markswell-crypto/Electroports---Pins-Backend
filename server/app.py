@@ -46,4 +46,4 @@ api.add_resource(OrderResource, '/orders')
 api.add_resource(OrderByIDResource, '/orders/<int:id>')
 
 if __name__ == '__main__':
-    app.run(port=5500, debug=True)
+    app.run(port=5000, debug=True)
