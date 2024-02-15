@@ -10,7 +10,7 @@ from brand import BrandsResource, BrandByIDResource
 from laptop import LaptopsResource, LaptopByIDResource
 from phone import PhonesResource, PhoneByIDResource
 from accessory import AccessoriesResource, AccessoryByIDResource
-from order import OrdersResource, OrderByIDResource
+from order import OrderResource, OrderByIDResource
 
 
 app = Flask(__name__)
@@ -42,7 +42,7 @@ api.add_resource(PhonesResource, '/phones')
 api.add_resource(PhoneByIDResource, '/phones/<int:id>')
 api.add_resource(AccessoriesResource, '/accessories')
 api.add_resource(AccessoryByIDResource, '/accessories/<int:id>')
-api.add_resource(OrdersResource, '/orders')
+api.add_resource(OrderResource, '/orders')
 api.add_resource(OrderByIDResource, '/orders/<int:id>')
 
 if __name__ == '__main__':
