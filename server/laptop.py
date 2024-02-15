@@ -17,8 +17,12 @@ class LaptopsResource(Resource):
         args = laptop_parser.parse_args()
         new_laptop = Laptop(brand_id=args['brand_id'], name=args['name'], price=args['price'], status=args['status'])
 
-        db.session.add(new_laptop)
-        db.session.commit()
+        try:
+            db.session.add(new_laptop)
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            return {"message": "Error occurred while adding the laptop.", "error": str(e)}, 500
 
         return {"laptop": {"id": new_laptop.id, "brand_id": new_laptop.brand_id, "name": new_laptop.name,
                            "price": new_laptop.price, "status": new_laptop.status}}, 201
@@ -30,8 +34,12 @@ class LaptopByIDResource(Resource):
         if not laptop:
             return {"message": "Laptop not found."}, 404
 
-        db.session.delete(laptop)
-        db.session.commit()
+        try:
+            db.session.delete(laptop)
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            return {"message": "Error occurred while deleting the laptop.", "error": str(e)}, 500
 
         return {"message": "Laptop deleted successfully."}, 204
 
@@ -42,12 +50,16 @@ class LaptopByIDResource(Resource):
             return {"message": "Laptop not found."}, 404
 
         args = laptop_parser.parse_args()
-        laptop.brand_id = args['brand_id']
-        laptop.name = args['name']
-        laptop.price = args['price']
-        laptop.status = args['status']
 
-        db.session.commit()
+        try:
+            laptop.brand_id = args['brand_id']
+            laptop.name = args['name']
+            laptop.price = args['price']
+            laptop.status = args['status']
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            return {"message": "Error occurred while updating the laptop.", "error": str(e)}, 500
 
         return {"laptop": {"id": laptop.id, "brand_id": laptop.brand_id, "name": laptop.name,
                            "price": laptop.price, "status": laptop.status}}
