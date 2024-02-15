@@ -11,7 +11,8 @@ from laptop import LaptopsResource, LaptopByIDResource
 from phone import PhonesResource, PhoneByIDResource
 from accessory import AccessoriesResource, AccessoryByIDResource
 from order import OrderResource, OrderByIDResource
-
+from review import ReviewsResource, ReviewByIDResource
+from soundDevice import SoundDevicesResource, SoundDeviceByIDResource
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///electro.db'
@@ -44,6 +45,10 @@ api.add_resource(AccessoriesResource, '/accessories')
 api.add_resource(AccessoryByIDResource, '/accessories/<int:id>')
 api.add_resource(OrderResource, '/orders')
 api.add_resource(OrderByIDResource, '/orders/<int:id>')
+api.add_resource(ReviewsResource, '/reviews')
+api.add_resource(ReviewByIDResource, '/reviews/<int:id>')
+api.add_resource(SoundDevicesResource, '/sounddevices')
+api.add_resource(SoundDeviceByIDResource, '/sounddevices/<int:id>')
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)
