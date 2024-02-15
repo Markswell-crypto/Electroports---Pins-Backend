@@ -46,3 +46,19 @@ class OrderByIDResource(Resource):
         db.session.commit()
 
         return {"message": "Order deleted successfully."}, 204
+
+    def patch(self, id):
+        order = Order.query.get(id)
+
+        if not order:
+            return {"message": "Order not found."}, 404
+
+        args = order_parser.parse_args()
+        order.user_id = args['user_id']
+        order.total_price = args['total_price']
+        order.order_date = args['order_date']
+
+        db.session.commit()
+
+        return {"order": {"id": order.id, "user_id": order.user_id, "total_price": order.total_price,
+                          "order_date": order.order_date.isoformat()}}
