@@ -9,9 +9,12 @@ laptop_parser.add_argument('status', type=str, help='Laptop status', required=Tr
 
 class LaptopsResource(Resource):
     def get(self):
-        laptops = Laptop.query.all()
-        return {"laptops": [{"id": laptop.id, "brand_id": laptop.brand_id, "name": laptop.name,
-                             "price": laptop.price, "status": laptop.status} for laptop in laptops]}
+        try:
+            laptops = Laptop.query.all()
+            return {"laptops": [{"id": laptop.id, "brand_id": laptop.brand_id, "name": laptop.name,
+                                 "price": laptop.price, "status": laptop.status} for laptop in laptops]}
+        except Exception as e:
+            return {"message": "An error occurred while fetching laptops.", "error": str(e)}, 500
 
     def post(self):
         args = laptop_parser.parse_args()
@@ -28,6 +31,16 @@ class LaptopsResource(Resource):
                            "price": new_laptop.price, "status": new_laptop.status}}, 201
 
 class LaptopByIDResource(Resource):
+    def get(self, id):
+        try:
+            laptop = Laptop.query.get(id)
+            if not laptop:
+                return {"message": "Laptop not found."}, 404
+            return {"laptop": {"id": laptop.id, "brand_id": laptop.brand_id, "name": laptop.name,
+                               "price": laptop.price, "status": laptop.status}}
+        except Exception as e:
+            return {"message": "An error occurred while fetching the laptop.", "error": str(e)}, 500
+
     def delete(self, id):
         laptop = Laptop.query.get(id)
 
