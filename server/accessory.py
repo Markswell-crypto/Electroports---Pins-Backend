@@ -22,16 +22,28 @@ class AccessoriesResource(Resource):
                               "price": new_accessory.price}}, 201
 
 class AccessoryByIDResource(Resource):
+    def get(self, id):
+        accessory = Accessory.query.get(id)
+
+        if not accessory:
+            return {"message": "Accessory not found."}, 404
+
+        return {"accessory": {"id": accessory.id, "name": accessory.name,
+                              "price": accessory.price}}
+
     def delete(self, id):
         accessory = Accessory.query.get(id)
 
         if not accessory:
             return {"message": "Accessory not found."}, 404
 
-        db.session.delete(accessory)
-        db.session.commit()
-
-        return {"message": "Accessory deleted successfully."}, 204
+        try:
+            db.session.delete(accessory)
+            db.session.commit()
+            return {"message": "Accessory deleted successfully."}, 204
+        except Exception as e:
+            db.session.rollback()
+            return {"message": "An error occurred while deleting the accessory.", "error": str(e)}, 500
 
     def patch(self, id):
         accessory = Accessory.query.get(id)
@@ -40,10 +52,13 @@ class AccessoryByIDResource(Resource):
             return {"message": "Accessory not found."}, 404
 
         args = accessory_parser.parse_args()
-        accessory.name = args['name']
-        accessory.price = args['price']
 
-        db.session.commit()
-
-        return {"accessory": {"id": accessory.id, "name": accessory.name,
-                              "price": accessory.price}}
+        try:
+            accessory.name = args['name']
+            accessory.price = args['price']
+            db.session.commit()
+            return {"accessory": {"id": accessory.id, "name": accessory.name,
+                                  "price": accessory.price}}
+        except Exception as e:
+            db.session.rollback()
+            return {"message": "An error occurred while updating the accessory.", "error": str(e)}, 500
