@@ -1,3 +1,4 @@
+import os
 from flask import Flask
 from flask_cors import CORS
 from flask_marshmallow import Marshmallow
@@ -15,7 +16,7 @@ from review import ReviewsResource, ReviewByIDResource
 from soundDevice import SoundDevicesResource, SoundDeviceByIDResource
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///electro.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URI')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['JWT_SECRET_KEY'] = 'your_jwt_secret_key'
 app.config['JWT_TOKEN_LOCATION'] = ['headers', 'cookies']
