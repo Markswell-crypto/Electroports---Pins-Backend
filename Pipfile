@@ -11,6 +11,9 @@ flask-sqlalchemy = "*"
 flask-migrate = "*"
 sqlalchemy-serializer = "*"
 flask-restful = "*"
+flask-cors = "*"
+flask-marshmallow = "*"
+flask-jwt-extended = "*"
 
 [dev-packages]
 
