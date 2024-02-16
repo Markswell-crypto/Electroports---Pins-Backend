@@ -14,6 +14,7 @@ flask-restful = "*"
 flask-cors = "*"
 flask-marshmallow = "*"
 flask-jwt-extended = "*"
+bcrypt = "*"
 
 [dev-packages]
 
