@@ -27,20 +27,16 @@ class BrandsResource(Resource):
             return {"message": "An error occurred while creating the brand.", "error": str(e)}, 500
 
 class BrandByIDResource(Resource):
-    def delete(self, id):
+    def get(self, id):
         try:
             brand = Brand.query.get(id)
             if not brand:
                 return {"message": "Brand not found."}, 404
 
-            db.session.delete(brand)
-            db.session.commit()
-
-            return {"message": "Brand deleted successfully."}, 204
+            return {"brand": {"id": brand.id, "name": brand.name, "logo_url": brand.logo_url}}
         except Exception as e:
-            db.session.rollback()
-            return {"message": "An error occurred while deleting the brand.", "error": str(e)}, 500
-
+            return {"message": "An error occurred while fetching the brand.", "error": str(e)}, 500
+        
     def patch(self, id):
         try:
             brand = Brand.query.get(id)
@@ -57,3 +53,17 @@ class BrandByIDResource(Resource):
         except Exception as e:
             db.session.rollback()
             return {"message": "An error occurred while updating the brand.", "error": str(e)}, 500
+        
+    def delete(self, id):
+        try:
+            brand = Brand.query.get(id)
+            if not brand:
+                return {"message": "Brand not found."}, 404
+
+            db.session.delete(brand)
+            db.session.commit()
+
+            return {"message": "Brand deleted successfully."}, 204
+        except Exception as e:
+            db.session.rollback()
+            return {"message": "An error occurred while deleting the brand.", "error": str(e)}, 500
