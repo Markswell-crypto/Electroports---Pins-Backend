@@ -2,6 +2,7 @@ from flask import request, jsonify
 from flask_restful import Resource
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from models import db, User, bcrypt
+import logging
 
 # User Registration Resource
 class UserRegistrationResource(Resource):
@@ -50,8 +51,9 @@ class UserLoginResource(Resource):
             else:
                 return {"error": "Invalid email or password."}, 401
         except Exception as e:
+            # Log the exception for debugging
+            logging.exception("An error occurred during login:")
             return {"error": "Failed to log in. Please try again later."}, 500
-
 
 # User Resource (Get user information)
 class UserResource(Resource):
