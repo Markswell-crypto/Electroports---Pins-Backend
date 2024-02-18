@@ -6,16 +6,12 @@ from datetime import datetime
 db = SQLAlchemy()
 bcrypt = Bcrypt()
 
-class User(db.Model, SerializerMixin):
-    ROLE_CHOICES = [
-        ('student', 'Student'),
-        ('employee', 'Employee'),
-        ('teacher', 'Teacher'),
-        ('developer', 'Developer')
-    ]
-
+class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    role = db.Column(db.String(20), nullable=False)
+    username = db.Column(db.String(50), unique=True, nullable=False)
+    email = db.Column(db.String(100), unique=True, nullable=False)
+    role = db.Column(db.String(20), default='user', nullable=False)
+    password = db.Column(db.String(60), nullable=False)
 
 class Brand(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
