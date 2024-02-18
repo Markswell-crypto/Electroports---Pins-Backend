@@ -45,12 +45,13 @@ class UserLoginResource(Resource):
 
             user = User.query.filter_by(email=email).first()
             if user and bcrypt.check_password_hash(user.password, password):
-                access_token = create_access_token(identity=email)
+                access_token = create_access_token(identity=user.email)  # Use email as identity
                 return {"access_token": access_token}, 200
             else:
                 return {"error": "Invalid email or password."}, 401
         except Exception as e:
             return {"error": "Failed to log in. Please try again later."}, 500
+
 
 # User Resource (Get user information)
 class UserResource(Resource):
