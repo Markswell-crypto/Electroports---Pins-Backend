@@ -1,9 +1,18 @@
-from app import app, db
-from models import User, Brand, Laptop, Phone, Accessory, SoundDevice
+from app import app
+from models import db, User, Brand, Laptop, Phone, Accessory, SoundDevice
 from datetime import datetime
 
 def seed_database():
     with app.app_context():
+        # Delete existing records
+        db.session.query(User).delete()
+        db.session.query(Brand).delete()
+        db.session.query(Laptop).delete()
+        db.session.query(Phone).delete()
+        db.session.query(Accessory).delete()
+        db.session.query(SoundDevice).delete()
+        db.session.commit()
+
         # Create users
         users = [
             User(role='student'),
