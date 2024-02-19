@@ -1,11 +1,11 @@
 import os
-from flask import Flask
+from flask import Flask, jsonify
 from flask_cors import CORS
 from flask_marshmallow import Marshmallow
 from flask_restful import Api
 from flask_jwt_extended import JWTManager
 from flask_migrate import Migrate
-from models import db
+from models import db, bcrypt
 from user import UserRegistrationResource, UserLoginResource, UserResource
 from brand import BrandsResource, BrandByIDResource
 from laptop import LaptopsResource, LaptopByIDResource
@@ -26,12 +26,21 @@ app.config['JWT_REFRESH_COOKIE_PATH'] = '/refresh'
 app.config['JWT_REFRESH_COOKIE_SECURE'] = False
 app.config['JWT_REFRESH_TOKEN_EXPIRES'] = False
 
+api = Api(app)
+jwt = JWTManager(app)
 db.init_app(app)
+bcrypt.init_app(app)
 migrate = Migrate(app, db)
 ma = Marshmallow(app)
-jwt = JWTManager(app)
-api = Api(app)
+
 CORS(app)
+
+with app.app_context():
+    db.create_all()
+    
+@app.route('/')
+def welcome():
+    return jsonify(message="Welcome to ElectroPorts and Pins API")
 
 api.add_resource(UserRegistrationResource, '/register')
 api.add_resource(UserLoginResource, '/login')
@@ -52,4 +61,4 @@ api.add_resource(SoundDevicesResource, '/sounddevices')
 api.add_resource(SoundDeviceByIDResource, '/sounddevices/<int:id>')
 
 if __name__ == '__main__':
-    app.run(port=5000, debug=True)
+    app.run(port=5500, debug=True, use_reloader=True)

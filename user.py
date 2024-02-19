@@ -1,6 +1,6 @@
-from flask import request, jsonify
+from flask import jsonify, request
 from flask_restful import Resource
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, create_refresh_token
 from models import db, User, bcrypt
 import logging
 
@@ -12,7 +12,6 @@ class UserRegistrationResource(Resource):
             username = data.get('username')
             email = data.get('email')
             password = data.get('password')
-            
 
             if not username or not password or not email:
                 return {"error": "Username, password, and email are required."}, 400
@@ -47,7 +46,8 @@ class UserLoginResource(Resource):
             user = User.query.filter_by(email=email).first()
             if user and bcrypt.check_password_hash(user.password, password):
                 access_token = create_access_token(identity=user.email)  # Use email as identity
-                return {"access_token": access_token}, 200
+                refresh_token = create_refresh_token(identity=user.email)
+                return {"access_token": access_token, "refresh_token": refresh_token}, 200
             else:
                 return {"error": "Invalid email or password."}, 401
         except Exception as e:
@@ -55,13 +55,24 @@ class UserLoginResource(Resource):
             logging.exception("An error occurred during login:")
             return {"error": "Failed to log in. Please try again later."}, 500
 
+# Refresh Token Resource
+class RefreshTokenResource(Resource):
+    @jwt_required(refresh=True)
+    def post(self):
+        try:
+            current_user = get_jwt_identity()
+            access_token = create_access_token(identity=current_user)
+            return {"access_token": access_token}, 200
+        except Exception as e:
+            return {"error": "Failed to refresh access token."}, 500
+
 # User Resource (Get user information)
 class UserResource(Resource):
     @jwt_required()
     def get(self):
         try:
             current_user = get_jwt_identity()
-            user = User.query.filter_by(username=current_user).first()
+            user = User.query.filter_by(email=current_user).first()
 
             if user:
                 return {
