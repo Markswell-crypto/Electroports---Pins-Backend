@@ -60,7 +60,7 @@ class SoundDevice(db.Model, SerializerMixin):
     description = db.Column(db.Text, nullable=True)
     reviews = db.relationship('Review', back_populates='sound_device')
 
-class Review(db.Model, SerializerMixin):
+class Review(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     component_type = db.Column(db.String(20), nullable=False)
@@ -75,6 +75,8 @@ class Review(db.Model, SerializerMixin):
     accessory = db.relationship('Accessory', back_populates='reviews')
     sound_device_id = db.Column(db.Integer, db.ForeignKey('sound_device.id'))
     sound_device = db.relationship('SoundDevice', back_populates='reviews')
+
+
 
 class Order(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
