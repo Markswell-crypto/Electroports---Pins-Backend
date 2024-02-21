@@ -5,26 +5,48 @@ accessory_parser = reqparse.RequestParser()
 accessory_parser.add_argument('name', type=str, help='Accessory name', required=True)
 accessory_parser.add_argument('price', type=int, help='Accessory price', required=True)
 accessory_parser.add_argument('image_url', type=str, help='Image URL', required=False)
+accessory_parser.add_argument('description', type=str, help='Accessory description', required=False)  # Add description field
 
 class AccessoriesResource(Resource):
     def get(self):
         try:
             accessories = Accessory.query.all()
-            return {"accessories": [{"id": accessory.id, "name": accessory.name,
-                                     "price": accessory.price, "image_url": accessory.image_url}
-                                    for accessory in accessories]}
+            return {
+                "accessories": [
+                    {
+                        "id": accessory.id,
+                        "name": accessory.name,
+                        "price": accessory.price,
+                        "image_url": accessory.image_url,
+                        "description": accessory.description  # Add description field
+                    }
+                    for accessory in accessories
+                ]
+            }
         except Exception as e:
             return {"message": "An error occurred while retrieving accessories.", "error": str(e)}, 500
 
     def post(self):
         args = accessory_parser.parse_args()
-        new_accessory = Accessory(name=args['name'], price=args['price'], image_url=args.get('image_url'))
+        new_accessory = Accessory(
+            name=args['name'],
+            price=args['price'],
+            image_url=args.get('image_url'),
+            description=args.get('description')  # Add description field
+        )
 
         try:
             db.session.add(new_accessory)
             db.session.commit()
-            return {"accessory": {"id": new_accessory.id, "name": new_accessory.name,
-                                  "price": new_accessory.price, "image_url": new_accessory.image_url}}, 201
+            return {
+                "accessory": {
+                    "id": new_accessory.id,
+                    "name": new_accessory.name,
+                    "price": new_accessory.price,
+                    "image_url": new_accessory.image_url,
+                    "description": new_accessory.description  # Add description field
+                }
+            }, 201
         except Exception as e:
             db.session.rollback()
             return {"message": "An error occurred while creating the accessory.", "error": str(e)}, 500
@@ -36,8 +58,15 @@ class AccessoryByIDResource(Resource):
         if not accessory:
             return {"message": "Accessory not found."}, 404
 
-        return {"accessory": {"id": accessory.id, "name": accessory.name,
-                              "price": accessory.price, "image_url": accessory.image_url}}
+        return {
+            "accessory": {
+                "id": accessory.id,
+                "name": accessory.name,
+                "price": accessory.price,
+                "image_url": accessory.image_url,
+                "description": accessory.description  # Add description field
+            }
+        }
 
     def delete(self, id):
         accessory = Accessory.query.get(id)
@@ -65,10 +94,17 @@ class AccessoryByIDResource(Resource):
             accessory.name = args['name']
             accessory.price = args['price']
             accessory.image_url = args.get('image_url', accessory.image_url)
+            accessory.description = args.get('description', accessory.description)  # Add description field
             db.session.commit()
-            return {"accessory": {"id": accessory.id, "name": accessory.name,
-                                  "price": accessory.price, "image_url": accessory.image_url}}
+            return {
+                "accessory": {
+                    "id": accessory.id,
+                    "name": accessory.name,
+                    "price": accessory.price,
+                    "image_url": accessory.image_url,
+                    "description": accessory.description  # Add description field
+                }
+            }
         except Exception as e:
             db.session.rollback()
             return {"message": "An error occurred while updating the accessory.", "error": str(e)}, 500
-

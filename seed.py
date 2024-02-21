@@ -256,7 +256,6 @@ def seed_database():
             {
                 "name": "dynaEdge",
                 "description": "The dynaEdge™ AR Smart Glasses enable multiple usage scenarios, including See-What-I-See, Remote Expert, Document Retrieval, Workflow Instructions and Real-Time Data Capture, making it the enterprise solution for tomorrow—starting today.",
-                "brand": "Toshiba",
                 "price": 1899.00,
                 "image": "https://modern-being.s3.us-west-2.amazonaws.com/ar:vr-glasses/dynaEdge.png"
             },
@@ -365,65 +364,56 @@ def seed_database():
                 "name": "One (2nd Gen)",
                 "description": "Get rich, room-filling sound with Sonos One, and control it with your voice, the Sonos app, Apple AirPlay 2, and more.",
                 "price": 199.00,
-                "image": "https://modern-being.s3.us-west-2.amazonaws.com/smart-speakers/One-2nd-Gen.png",
-                "status": "new"
-            },
+                "image": "https://modern-being.s3.us-west-2.amazonaws.com/smart-speakers/One-2nd-Gen.png"            
+                },
             {
                 "name": "Move",
                 "description": "Get brilliant sound anywhere with the weatherproof and drop-resistant Move. Control with your voice, the Sonos app, and Apple AirPlay 2 at home, and stream via Bluetooth® when WiFi isn't available.",
                 "price": 399.00,
-                "image": "https://modern-being.s3.us-west-2.amazonaws.com/smart-speakers/Move.png",
-                "status": "new"
-            },
+                "image": "https://modern-being.s3.us-west-2.amazonaws.com/smart-speakers/Move.png"            
+                },
             {
                 "name": "HomePod mini",
                 "description": "Jam-packed with innovation, HomePod mini delivers unexpectedly big sound for a speaker of its size. At just 3.3 inches tall, it takes up almost no space but fills the entire room with rich 360‑degree audio that sounds amazing from every angle.",
                 "price": 99.00,
-                "image": "https://modern-being.s3.us-west-2.amazonaws.com/smart-speakers/HomePod-mini.jpeg",
-                "status": "new"
-            },
+                "image": "https://modern-being.s3.us-west-2.amazonaws.com/smart-speakers/HomePod-mini.jpeg"            
+                },
             {
                 "name": "Echo (4th Gen)",
                 "description": "Talk about well-rounded. Echo combines premium sound, a built-in Zigbee smart home hub, and a temperature sensor. Powerful speakers deliver clear highs, dynamic mids, and deep bass for rich, detailed sound that adapts to any room.",
                 "price": 79.99,
-                "image": "https://modern-being.s3.us-west-2.amazonaws.com/smart-speakers/Echo-4th-Gen.jpg",
-                "status": "new"
-            },
+                "image": "https://modern-being.s3.us-west-2.amazonaws.com/smart-speakers/Echo-4th-Gen.jpg"
+                },
             {
                 "name": "Echo Studio",
                 "description": "You've never heard an Echo like this before. Echo Studio creates an immersive, 3-dimensional soundscape, wrapping you in studio-quality audio from every direction.",
                 "price": 199.99,
-                "image": "https://modern-being.s3.us-west-2.amazonaws.com/smart-speakers/Echo-studio.jpeg",
-                "status": "new"
-            },
+                "image": "https://modern-being.s3.us-west-2.amazonaws.com/smart-speakers/Echo-studio.jpeg"
+                },
             {
                 "name": "Nest Audio",
                 "description": "Nest Audio adapts to your environment and whatever you’re listening to. So music sounds better. And news, radio, and audiobooks sound even clearer.",
                 "price": 99.99,
-                "image": "https://modern-being.s3.us-west-2.amazonaws.com/smart-speakers/Nest-Audio.png",
-                "status": "new"
-            },
+                "image": "https://modern-being.s3.us-west-2.amazonaws.com/smart-speakers/Nest-Audio.png"
+                },
             {
                 "name": "Nest Mini",
                 "description": "Nest Mini. Still mini. Even more mighty.",
                 "price": 34.99,
-                "image": "https://modern-being.s3.us-west-2.amazonaws.com/smart-speakers/Nest-Mini.png",
-                "status": "new"
-            },
+                "image": "https://modern-being.s3.us-west-2.amazonaws.com/smart-speakers/Nest-Mini.png"
+                },
             {
                 "name": "Bose Smart Speaker 500",
                 "description": "It’s powerfully simple. Fill any room with wall-to-wall stereo sound, while built-in voice control puts millions of songs at the tip of your tongue.",
                 "price": 299.00,
-                "image": "https://modern-being.s3.us-west-2.amazonaws.com/smart-speakers/Bose-Smart-Speaker-500.png",
-                "status": "new"
-            },
+                "image": "https://modern-being.s3.us-west-2.amazonaws.com/smart-speakers/Bose-Smart-Speaker-500.png"
+                },
             {
                 "name": "Bose Home Speaker 300",
                 "description": "The Bose Home Speaker 300 brings room-rocking bass and 360° lifelike sound to a space-saving size. Plus, with built-in voice assistants, like the Google Assistant and Alexa, all of your favorite music is just an ask away. Turn it up and feel the difference.",
                 "price": 199.00,
-                "image": "https://modern-being.s3.us-west-2.amazonaws.com/smart-speakers/Bose-Home-Speaker-300.png",
-                "status": "new"
-            }
+                "image": "https://modern-being.s3.us-west-2.amazonaws.com/smart-speakers/Bose-Home-Speaker-300.png"
+                }
         ]
         sound_devices = [SoundDevice(**data) for data in sound_devices_data]
 
@@ -431,6 +421,6 @@ def seed_database():
         # Add objects to session and commit changes
         db.session.add_all(users + brands + phones + laptops + accessories + sound_devices)
         db.session.commit()
-
+        print("Seeding Successful")
 if __name__ == '__main__':
     seed_database()

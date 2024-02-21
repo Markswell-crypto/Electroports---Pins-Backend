@@ -9,19 +9,37 @@ class BrandsResource(Resource):
     def get(self):
         try:
             brands = Brand.query.all()
-            return {"brands": [{"id": brand.id, "name": brand.name, "logo_url": brand.logo_url} for brand in brands]}
+            return {
+                "brands": [
+                    {
+                        "id": brand.id,
+                        "name": brand.name,
+                        "logo_url": brand.logo_url
+                    }
+                    for brand in brands
+                ]
+            }
         except Exception as e:
             return {"message": "An error occurred while fetching brands.", "error": str(e)}, 500
 
     def post(self):
         try:
             args = brand_parser.parse_args()
-            new_brand = Brand(name=args['name'], logo_url=args['logo_url'])
+            new_brand = Brand(
+                name=args['name'],
+                logo_url=args['logo_url']
+            )
 
             db.session.add(new_brand)
             db.session.commit()
 
-            return {"brand": {"id": new_brand.id, "name": new_brand.name, "logo_url": new_brand.logo_url}}, 201
+            return {
+                "brand": {
+                    "id": new_brand.id,
+                    "name": new_brand.name,
+                    "logo_url": new_brand.logo_url
+                }
+            }, 201
         except Exception as e:
             db.session.rollback()
             return {"message": "An error occurred while creating the brand.", "error": str(e)}, 500
@@ -33,7 +51,13 @@ class BrandByIDResource(Resource):
             if not brand:
                 return {"message": "Brand not found."}, 404
 
-            return {"brand": {"id": brand.id, "name": brand.name, "logo_url": brand.logo_url}}
+            return {
+                "brand": {
+                    "id": brand.id,
+                    "name": brand.name,
+                    "logo_url": brand.logo_url
+                }
+            }
         except Exception as e:
             return {"message": "An error occurred while fetching the brand.", "error": str(e)}, 500
         
@@ -49,7 +73,13 @@ class BrandByIDResource(Resource):
 
             db.session.commit()
 
-            return {"brand": {"id": brand.id, "name": brand.name, "logo_url": brand.logo_url}}
+            return {
+                "brand": {
+                    "id": brand.id,
+                    "name": brand.name,
+                    "logo_url": brand.logo_url
+                }
+            }
         except Exception as e:
             db.session.rollback()
             return {"message": "An error occurred while updating the brand.", "error": str(e)}, 500

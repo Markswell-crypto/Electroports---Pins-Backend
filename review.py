@@ -12,31 +12,58 @@ class ReviewsResource(Resource):
     def get(self):
         try:
             reviews = Review.query.all()
-            return {"reviews": [{"id": review.id, "user_id": review.user_id, 
-                                 "component_type": review.component_type, 
-                                 "component_id": review.component_id, 
-                                 "rating": review.rating, 
-                                 "comment": review.comment} for review in reviews]}
+            return {
+                "reviews": [
+                    {
+                        "id": review.id,
+                        "user_id": review.user_id,
+                        "component_type": review.component_type,
+                        "component_id": review.component_id,
+                        "rating": review.rating,
+                        "comment": review.comment,
+                        "phone_id": review.phone_id,
+                        "laptop_id": review.laptop_id,
+                        "accessory_id": review.accessory_id,
+                        "sound_device_id": review.sound_device_id
+                    }
+                    for review in reviews
+                ]
+            }
         except Exception as e:
             return {"message": "An error occurred while retrieving reviews.", "error": str(e)}, 500
 
     def post(self):
         try:
             args = review_parser.parse_args()
-            new_review = Review(user_id=args['user_id'], 
-                                component_type=args['component_type'], 
-                                component_id=args['component_id'], 
-                                rating=args['rating'], 
-                                comment=args['comment'])
+            new_review = Review(
+                user_id=args['user_id'],
+                component_type=args['component_type'],
+                component_id=args['component_id'],
+                rating=args['rating'],
+                comment=args['comment'],
+                phone_id=args.get('phone_id'),
+                laptop_id=args.get('laptop_id'),
+                accessory_id=args.get('accessory_id'),
+                sound_device_id=args.get('sound_device_id')
+            )
 
             db.session.add(new_review)
             db.session.commit()
 
-            return {"review": {"id": new_review.id, "user_id": new_review.user_id, 
-                               "component_type": new_review.component_type, 
-                               "component_id": new_review.component_id, 
-                               "rating": new_review.rating, 
-                               "comment": new_review.comment}}, 201
+            return {
+                "review": {
+                    "id": new_review.id,
+                    "user_id": new_review.user_id,
+                    "component_type": new_review.component_type,
+                    "component_id": new_review.component_id,
+                    "rating": new_review.rating,
+                    "comment": new_review.comment,
+                    "phone_id": new_review.phone_id,
+                    "laptop_id": new_review.laptop_id,
+                    "accessory_id": new_review.accessory_id,
+                    "sound_device_id": new_review.sound_device_id
+                }
+            }, 201
         except Exception as e:
             db.session.rollback()
             return {"message": "An error occurred while creating the review.", "error": str(e)}, 500
@@ -65,12 +92,25 @@ class ReviewByIDResource(Resource):
             review.component_id = args['component_id']
             review.rating = args['rating']
             review.comment = args['comment']
+            review.phone_id = args.get('phone_id')
+            review.laptop_id = args.get('laptop_id')
+            review.accessory_id = args.get('accessory_id')
+            review.sound_device_id = args.get('sound_device_id')
             db.session.commit()
-            return {"review": {"id": review.id, "user_id": review.user_id, 
-                               "component_type": review.component_type, 
-                               "component_id": review.component_id, 
-                               "rating": review.rating, 
-                               "comment": review.comment}}
+            return {
+                "review": {
+                    "id": review.id,
+                    "user_id": review.user_id,
+                    "component_type": review.component_type,
+                    "component_id": review.component_id,
+                    "rating": review.rating,
+                    "comment": review.comment,
+                    "phone_id": review.phone_id,
+                    "laptop_id": review.laptop_id,
+                    "accessory_id": review.accessory_id,
+                    "sound_device_id": review.sound_device_id
+                }
+            }
         except Exception as e:
             db.session.rollback()
             return {"message": "An error occurred while updating the review.", "error": str(e)}, 500

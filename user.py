@@ -2,7 +2,16 @@ from flask import jsonify, request
 from flask_restful import Resource
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, create_refresh_token
 from models import db, User, bcrypt
-import logging
+from flask_uploads import UploadNotAllowed, configure_uploads, IMAGES, UploadSet
+import os
+
+# Define the allowed image extensions
+images = UploadSet('images', IMAGES)
+
+# Configure the upload set
+def configure_image_uploads(app):
+    app.config['UPLOADS_DEFAULT_DEST'] = 'path/to/uploads'  # Set your upload directory
+    configure_uploads(app, images)
 
 # User Registration Resource
 class UserRegistrationResource(Resource):
@@ -79,8 +88,58 @@ class UserResource(Resource):
                     "id": user.id,
                     "username": user.username,
                     "role": user.role,
+                    "image_url": user.image_url
                 }, 200
             else:
                 return {"message": "User not found."}, 404
         except Exception as e:
             return {"error": "Failed to retrieve user information."}, 500
+
+    @jwt_required()
+    def put(self):
+        try:
+            current_user = get_jwt_identity()
+            user = User.query.filter_by(email=current_user).first()
+
+            if not user:
+                return {"message": "User not found."}, 404
+
+            # Check if the request contains a file
+            if 'image' not in request.files:
+                return {"error": "No file provided."}, 400
+
+            # Get the file from the request
+            image = request.files['image']
+
+            # Save the image
+            if image and images.is_allowed(image.filename):
+                filename = images.save(image)
+                user.image_url = filename
+                db.session.commit()
+                return {"message": "Image uploaded successfully.", "image_url": filename}, 200
+            else:
+                return {"error": "Invalid image file."}, 400
+        except UploadNotAllowed:
+            return {"error": "File upload not allowed."}, 400
+        except Exception as e:
+            return {"error": "Failed to upload image."}, 500
+
+    @jwt_required()
+    def delete(self):
+        try:
+            current_user = get_jwt_identity()
+            user = User.query.filter_by(email=current_user).first()
+
+            if not user:
+                return {"message": "User not found."}, 404
+
+            # Delete the user's image file
+            if user.image_url:
+                os.remove(os.path.join(app.config['UPLOADS_DEFAULT_DEST'], user.image_url))
+                user.image_url = None
+                db.session.commit()
+                return {"message": "Image deleted successfully."}, 200
+            else:
+                return {"message": "No image to delete."}, 404
+        except Exception as e:
+            return {"error": "Failed to delete image."}, 500
