@@ -1,7 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy_serializer import SerializerMixin
 from flask_bcrypt import Bcrypt
-from datetime import datetime
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()
@@ -12,37 +11,16 @@ class User(db.Model):
     email = db.Column(db.String(100), unique=True, nullable=False)
     role = db.Column(db.String(20), default='user', nullable=False)
     password = db.Column(db.String(60), nullable=False)
+    image_url = db.Column(db.String(255), nullable=True)
+    orders = db.relationship('Order', backref='customer', lazy=True)
+    reviews = db.relationship('Review', backref='user', lazy=True)
 
 class Brand(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
-    logo_url = db.Column(db.String(255), nullable=True)  
-
-class Laptop(db.Model, SerializerMixin):
-    NEW = 'new'
-    USED = 'used'
-    STATUS_CHOICES = [
-        (NEW, 'New'),
-        (USED, 'Used'),
-    ]
-
-    id = db.Column(db.Integer, primary_key=True)
-    brand_id = db.Column(db.Integer, db.ForeignKey('brand.id'), nullable=False)
-    name = db.Column(db.String(100), nullable=False)
-    price = db.Column(db.Integer, nullable=False)
-    status = db.Column(db.String(10), nullable=False)
-    image_url = db.Column(db.String(255), nullable=True)  
-    description = db.Column(db.Text, nullable=True)
-    brand = db.relationship('Brand', backref=db.backref('laptops', lazy=True))
+    logo_url = db.Column(db.String(255), nullable=True)
 
 class Phone(db.Model, SerializerMixin):
-    NEW = 'new'
-    USED = 'used'
-    STATUS_CHOICES = [
-        (NEW, 'New'),
-        (USED, 'Used'),
-    ]
-
     id = db.Column(db.Integer, primary_key=True)
     brand_id = db.Column(db.Integer, db.ForeignKey('brand.id'), nullable=False)
     name = db.Column(db.String(100), nullable=False)
@@ -50,45 +28,37 @@ class Phone(db.Model, SerializerMixin):
     status = db.Column(db.String(10), nullable=False)
     image_url = db.Column(db.String(255), nullable=True)  
     description = db.Column(db.Text, nullable=True)
-    brand = db.relationship('Brand', backref=db.backref('phones', lazy=True))
+
+    brand = db.relationship('Brand', backref='phones')
+    reviews = db.relationship('Review', back_populates='phone')
+
+class Laptop(db.Model, SerializerMixin):
+    id = db.Column(db.Integer, primary_key=True)
+    brand_id = db.Column(db.Integer, db.ForeignKey('brand.id'), nullable=False)
+    name = db.Column(db.String(100), nullable=False)
+    price = db.Column(db.Integer, nullable=False)
+    status = db.Column(db.String(10), nullable=False)
+    image = db.Column(db.String(255), nullable=True)  
+    description = db.Column(db.Text, nullable=True)
+
+    brand = db.relationship('Brand', backref='laptops')
+    reviews = db.relationship('Review', back_populates='laptop')
 
 class Accessory(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     price = db.Column(db.Integer, nullable=False)
-    image_url = db.Column(db.String(255), nullable=True) 
+    image = db.Column(db.String(255), nullable=True) 
     description = db.Column(db.Text, nullable=True)
+    reviews = db.relationship('Review', back_populates='accessory')
 
 class SoundDevice(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     price = db.Column(db.Integer, nullable=False)
-    image_url = db.Column(db.String(255), nullable=True)  
+    image = db.Column(db.String(255), nullable=True)  
     description = db.Column(db.Text, nullable=True)
-
-class Order(db.Model, SerializerMixin):
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    total_price = db.Column(db.Integer, nullable=False)
-    order_date = db.Column(db.DateTime, nullable=False)
-
-    user = db.relationship('User', backref=db.backref('orders', lazy=True))
-
-class OrderItem(db.Model, SerializerMixin):
-    COMPONENT_CHOICES = [
-        ('laptop', 'Laptop'),
-        ('phone', 'Phone'),
-        ('accessory', 'Accessory'),
-        ('sound device', 'Sound Device'),
-    ]
-
-    id = db.Column(db.Integer, primary_key=True)
-    component_type = db.Column(db.String(20), nullable=False)
-    component_id = db.Column(db.Integer, nullable=False)
-    order_id = db.Column(db.Integer, db.ForeignKey('order.id'), nullable=False)
-    quantity = db.Column(db.Integer, nullable=False)
-
-    order = db.relationship('Order', backref=db.backref('order_items', lazy=True))
+    reviews = db.relationship('Review', back_populates='sound_device')
 
 class Review(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
@@ -97,5 +67,24 @@ class Review(db.Model, SerializerMixin):
     component_id = db.Column(db.Integer, nullable=False)
     rating = db.Column(db.Integer, nullable=False)
     comment = db.Column(db.String(150), nullable=False)
+    phone_id = db.Column(db.Integer, db.ForeignKey('phone.id'))
+    phone = db.relationship('Phone', back_populates='reviews')
+    laptop_id = db.Column(db.Integer, db.ForeignKey('laptop.id'))
+    laptop = db.relationship('Laptop', back_populates='reviews')
+    accessory_id = db.Column(db.Integer, db.ForeignKey('accessory.id'))
+    accessory = db.relationship('Accessory', back_populates='reviews')
+    sound_device_id = db.Column(db.Integer, db.ForeignKey('sound_device.id'))
+    sound_device = db.relationship('SoundDevice', back_populates='reviews')
 
-    user = db.relationship('User', backref=db.backref('reviews', lazy=True))
+class Order(db.Model, SerializerMixin):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    total_price = db.Column(db.Integer, nullable=False)
+    order_date = db.Column(db.DateTime, nullable=False)
+
+class OrderItem(db.Model, SerializerMixin):
+    id = db.Column(db.Integer, primary_key=True)
+    component_type = db.Column(db.String(20), nullable=False)
+    component_id = db.Column(db.Integer, nullable=False)
+    order_id = db.Column(db.Integer, db.ForeignKey('order.id'), nullable=False)
+    quantity = db.Column(db.Integer, nullable=False)

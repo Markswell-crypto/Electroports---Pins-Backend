@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 from flask import Flask, jsonify
 from flask_cors import CORS
 from flask_marshmallow import Marshmallow
@@ -18,13 +19,14 @@ from soundDevice import SoundDevicesResource, SoundDeviceByIDResource
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URI')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['JWT_SECRET_KEY'] = 'your_jwt_secret_key'
+app.config['JWT_SECRET_KEY'] = '3fsfr5gf6g7hhg7'
 app.config['JWT_TOKEN_LOCATION'] = ['headers', 'cookies']
 app.config['JWT_COOKIE_CSRF_PROTECT'] = False
 app.config['JWT_COOKIE_SECURE'] = False
 app.config['JWT_REFRESH_COOKIE_PATH'] = '/refresh'
 app.config['JWT_REFRESH_COOKIE_SECURE'] = False
 app.config['JWT_REFRESH_TOKEN_EXPIRES'] = False
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=2)
 
 api = Api(app)
 jwt = JWTManager(app)
