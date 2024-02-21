@@ -4,7 +4,7 @@ from models import db, SoundDevice
 sound_device_parser = reqparse.RequestParser()
 sound_device_parser.add_argument('name', type=str, help='Sound device name', required=True)
 sound_device_parser.add_argument('price', type=int, help='Sound device price', required=True)
-sound_device_parser.add_argument('image_url', type=str, help='Image URL', required=False)
+sound_device_parser.add_argument('image', type=str, help='Image URL', required=False)
 sound_device_parser.add_argument('description', type=str, help='Sound device description', required=False)  # Add description field
 
 class SoundDevicesResource(Resource):
@@ -17,7 +17,7 @@ class SoundDevicesResource(Resource):
                         "id": device.id,
                         "name": device.name,
                         "price": device.price,
-                        "image_url": device.image_url,
+                        "image": device.image,
                         "description": device.description  # Add description field
                     }
                     for device in sound_devices
@@ -32,7 +32,7 @@ class SoundDevicesResource(Resource):
             new_sound_device = SoundDevice(
                 name=args['name'],
                 price=args['price'],
-                image_url=args['image_url'],
+                image=args['image'],
                 description=args.get('description')  # Add description field
             )
 
@@ -44,7 +44,7 @@ class SoundDevicesResource(Resource):
                     "id": new_sound_device.id,
                     "name": new_sound_device.name,
                     "price": new_sound_device.price,
-                    "image_url": new_sound_device.image_url,
+                    "image": new_sound_device.image,
                     "description": new_sound_device.description  # Add description field
                 }
             }, 201
@@ -63,7 +63,7 @@ class SoundDeviceByIDResource(Resource):
                     "id": sound_device.id,
                     "name": sound_device.name,
                     "price": sound_device.price,
-                    "image_url": sound_device.image_url,
+                    "image": sound_device.image,
                     "description": sound_device.description  # Add description field
                 }
             }
@@ -90,7 +90,7 @@ class SoundDeviceByIDResource(Resource):
                 return {"message": "Sound device not found."}, 404
             sound_device.name = args['name']
             sound_device.price = args['price']
-            sound_device.image_url = args['image_url']
+            sound_device.image = args['image']
             sound_device.description = args.get('description', sound_device.description)  # Add description field
             db.session.commit()
             return {
@@ -98,7 +98,7 @@ class SoundDeviceByIDResource(Resource):
                     "id": sound_device.id,
                     "name": sound_device.name,
                     "price": sound_device.price,
-                    "image_url": sound_device.image_url,
+                    "image": sound_device.image,
                     "description": sound_device.description  # Add description field
                 }
             }

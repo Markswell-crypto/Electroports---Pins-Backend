@@ -4,7 +4,7 @@ from models import db, Accessory
 accessory_parser = reqparse.RequestParser()
 accessory_parser.add_argument('name', type=str, help='Accessory name', required=True)
 accessory_parser.add_argument('price', type=int, help='Accessory price', required=True)
-accessory_parser.add_argument('image_url', type=str, help='Image URL', required=False)
+accessory_parser.add_argument('image', type=str, help='Image URL', required=False)
 accessory_parser.add_argument('description', type=str, help='Accessory description', required=False)  # Add description field
 
 class AccessoriesResource(Resource):
@@ -17,7 +17,7 @@ class AccessoriesResource(Resource):
                         "id": accessory.id,
                         "name": accessory.name,
                         "price": accessory.price,
-                        "image_url": accessory.image_url,
+                        "image": accessory.image,
                         "description": accessory.description  # Add description field
                     }
                     for accessory in accessories
@@ -31,7 +31,7 @@ class AccessoriesResource(Resource):
         new_accessory = Accessory(
             name=args['name'],
             price=args['price'],
-            image_url=args.get('image_url'),
+            image=args.get('image'),
             description=args.get('description')  # Add description field
         )
 
@@ -43,7 +43,7 @@ class AccessoriesResource(Resource):
                     "id": new_accessory.id,
                     "name": new_accessory.name,
                     "price": new_accessory.price,
-                    "image_url": new_accessory.image_url,
+                    "image": new_accessory.image,
                     "description": new_accessory.description  # Add description field
                 }
             }, 201
@@ -63,7 +63,7 @@ class AccessoryByIDResource(Resource):
                 "id": accessory.id,
                 "name": accessory.name,
                 "price": accessory.price,
-                "image_url": accessory.image_url,
+                "image": accessory.image,
                 "description": accessory.description  # Add description field
             }
         }
@@ -93,7 +93,7 @@ class AccessoryByIDResource(Resource):
         try:
             accessory.name = args['name']
             accessory.price = args['price']
-            accessory.image_url = args.get('image_url', accessory.image_url)
+            accessory.image = args.get('image', accessory.image)
             accessory.description = args.get('description', accessory.description)  # Add description field
             db.session.commit()
             return {
@@ -101,7 +101,7 @@ class AccessoryByIDResource(Resource):
                     "id": accessory.id,
                     "name": accessory.name,
                     "price": accessory.price,
-                    "image_url": accessory.image_url,
+                    "image": accessory.image,
                     "description": accessory.description  # Add description field
                 }
             }

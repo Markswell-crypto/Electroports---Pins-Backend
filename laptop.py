@@ -6,7 +6,7 @@ laptop_parser.add_argument('brand_id', type=int, help='Brand ID', required=True)
 laptop_parser.add_argument('name', type=str, help='Laptop name', required=True)
 laptop_parser.add_argument('price', type=int, help='Laptop price', required=True)
 laptop_parser.add_argument('status', type=str, help='Laptop status', required=True)
-laptop_parser.add_argument('image_url', type=str, help='Image URL', required=False)
+laptop_parser.add_argument('image', type=str, help='Image URL', required=False)
 laptop_parser.add_argument('description', type=str, help='Laptop description', required=False)  # Add description field
 
 class LaptopsResource(Resource):
@@ -21,7 +21,7 @@ class LaptopsResource(Resource):
                         "name": laptop.name,
                         "price": laptop.price,
                         "status": laptop.status,
-                        "image_url": laptop.image_url,
+                        "image": laptop.image,
                         "description": laptop.description  # Add description field
                     }
                     for laptop in laptops
@@ -37,7 +37,7 @@ class LaptopsResource(Resource):
             name=args['name'],
             price=args['price'],
             status=args['status'],
-            image_url=args.get('image_url'),
+            image=args.get('image'),
             description=args.get('description')  # Add description field
         )
 
@@ -55,7 +55,7 @@ class LaptopsResource(Resource):
                 "name": new_laptop.name,
                 "price": new_laptop.price,
                 "status": new_laptop.status,
-                "image_url": new_laptop.image_url,
+                "image": new_laptop.image,
                 "description": new_laptop.description  # Add description field
             }
         }, 201
@@ -73,7 +73,7 @@ class LaptopByIDResource(Resource):
                     "name": laptop.name,
                     "price": laptop.price,
                     "status": laptop.status,
-                    "image_url": laptop.image_url,
+                    "image": laptop.image,
                     "description": laptop.description  # Add description field
                 }
             }
@@ -108,7 +108,7 @@ class LaptopByIDResource(Resource):
             laptop.name = args['name']
             laptop.price = args['price']
             laptop.status = args['status']
-            laptop.image_url = args.get('image_url', laptop.image_url)
+            laptop.image = args.get('image', laptop.image)
             laptop.description = args.get('description', laptop.description)  # Add description field
             db.session.commit()
         except Exception as e:
@@ -122,7 +122,7 @@ class LaptopByIDResource(Resource):
                 "name": laptop.name,
                 "price": laptop.price,
                 "status": laptop.status,
-                "image_url": laptop.image_url,
+                "image": laptop.image,
                 "description": laptop.description  # Add description field
             }
         }
