@@ -7,7 +7,7 @@ from flask_restful import Api
 from flask_jwt_extended import JWTManager
 from flask_migrate import Migrate
 from models import db, bcrypt
-from user import UserRegistrationResource, UserLoginResource, UserResource
+from user import UserRegistrationResource, UserLoginResource, UserResource, RefreshTokenResource, ProfileResource, ServeImage
 from brand import BrandsResource, BrandByIDResource
 from laptop import LaptopsResource, LaptopByIDResource
 from phone import PhonesResource, PhoneByIDResource
@@ -47,6 +47,9 @@ def welcome():
 api.add_resource(UserRegistrationResource, '/register')
 api.add_resource(UserLoginResource, '/login')
 api.add_resource(UserResource, '/user')
+api.add_resource(RefreshTokenResource, '/refresh')
+api.add_resource(ProfileResource, '/profile')
+api.add_resource(ServeImage, '/image/<string:filename>')
 api.add_resource(BrandsResource, '/brands')
 api.add_resource(BrandByIDResource, '/brands/<int:id>')
 api.add_resource(LaptopsResource, '/laptops')
