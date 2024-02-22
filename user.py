@@ -136,7 +136,7 @@ class UserResource(Resource):
         except Exception as e:
             return {"error": "Failed to delete image."}, 500
 
-# Profile Page Resource
+# User Profile Resource
 class ProfileResource(Resource):
     @jwt_required()
     def get(self):
@@ -159,7 +159,7 @@ class ProfileResource(Resource):
     @jwt_required()
     def put(self):
         try:
-            data = request.get_json()
+            data = request.form
             current_user = get_jwt_identity()
             user = User.query.filter_by(email=current_user).first()
 
@@ -185,7 +185,6 @@ class ProfileResource(Resource):
             return {"message": "User profile updated successfully."}, 200
         except Exception as e:
             return {"error": "Failed to update user profile."}, 500
-
 # Serve User Images
 class ServeImage(Resource):
     def get(self, filename):
