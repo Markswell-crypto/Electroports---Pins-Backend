@@ -141,7 +141,7 @@ from werkzeug.utils import secure_filename
 from werkzeug.exceptions import BadRequest
 
 # Modify UserResource to handle image upload
-class UserResource(Resource):
+class ProfileResource(Resource):
     @jwt_required()
     def put(self):
         try:
