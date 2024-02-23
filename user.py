@@ -1,3 +1,6 @@
+from flask_cors import cross_origin
+from werkzeug.utils import secure_filename
+from werkzeug.exceptions import BadRequest
 from flask import jsonify, request, current_app, send_from_directory
 from flask_restful import Resource
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, create_refresh_token
@@ -111,8 +114,8 @@ class UserResource(Resource):
                 return {"message": "Image uploaded successfully.", "image_url": filename}, 200
             else:
                 return {"error": "Invalid image file."}, 400
-        except UploadNotAllowed:
-            return {"error": "File upload not allowed."}, 400
+        except BadRequest:
+            return {"error": "Invalid image file."}, 400
         except Exception as e:
             return {"error": "Failed to upload image."}, 500
 
@@ -136,12 +139,26 @@ class UserResource(Resource):
         except Exception as e:
             return {"error": "Failed to delete image."}, 500
 
-# Add necessary imports
-from werkzeug.utils import secure_filename
-from werkzeug.exceptions import BadRequest
-
-# Modify UserResource to handle image upload
+# Profile Resource (Handle profile updates)
 class ProfileResource(Resource):
+    @jwt_required()
+    def get(self):
+        try:
+            current_user = get_jwt_identity()
+            user = User.query.filter_by(email=current_user).first()
+
+            if user:
+                return {
+                    "id": user.id,
+                    "username": user.username,
+                    "email": user.email,
+                    "image_url": user.image_url
+                }, 200
+            else:
+                return {"message": "User not found."}, 404
+        except Exception as e:
+            return {"error": "Failed to retrieve user profile."}, 500
+
     @jwt_required()
     def put(self):
         try:
@@ -151,26 +168,26 @@ class ProfileResource(Resource):
             if not user:
                 return {"message": "User not found."}, 404
 
-            # Check if the request contains a file
-            if 'image' not in request.files:
-                return {"error": "No file provided."}, 400
+            # Update user details
+            data = request.form
+            user.username = data.get('username', user.username)
+            user.email = data.get('email', user.email)
 
-            # Get the file from the request
-            image = request.files['image']
+            # Check if a new image file is provided
+            if 'image' in request.files:
+                image = request.files['image']
+                if image and allowed_file(image.filename):
+                    filename = secure_filename(image.filename)
+                    image.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
+                    # Delete old image if exists
+                    if user.image_url:
+                        os.remove(os.path.join(current_app.config['UPLOAD_FOLDER'], user.image_url))
+                    user.image_url = filename
 
-            # Save the image
-            if image and allowed_file(image.filename):
-                filename = secure_filename(image.filename)
-                image.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
-                user.image_url = filename
-                db.session.commit()
-                return {"message": "Image uploaded successfully.", "image_url": filename}, 200
-            else:
-                return {"error": "Invalid image file."}, 400
-        except BadRequest:
-            return {"error": "Invalid image file."}, 400
+            db.session.commit()
+            return {"message": "User profile updated successfully."}, 200
         except Exception as e:
-            return {"error": "Failed to upload image."}, 500
+            return {"error": "Failed to update user profile."}, 500
 
 # Serve User Images
 class ServeImage(Resource):
