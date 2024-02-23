@@ -155,8 +155,10 @@ class ProfileResource(Resource):
                     "image_url": user.image_url
                 }, 200
             else:
-                return {"message": "User not found."}, 404
+                return {"error": "User not found."}, 404
         except Exception as e:
+            # Log the exception for debugging
+            logging.exception("An error occurred while retrieving user profile:")
             return {"error": "Failed to retrieve user profile."}, 500
 
     @jwt_required()
@@ -166,7 +168,7 @@ class ProfileResource(Resource):
             user = User.query.filter_by(email=current_user).first()
 
             if not user:
-                return {"message": "User not found."}, 404
+                return {"error": "User not found."}, 404
 
             # Update user details
             data = request.form
@@ -187,7 +189,10 @@ class ProfileResource(Resource):
             db.session.commit()
             return {"message": "User profile updated successfully."}, 200
         except Exception as e:
+            # Log the exception for debugging
+            logging.exception("An error occurred while updating user profile:")
             return {"error": "Failed to update user profile."}, 500
+
 
 # Serve User Images
 class ServeImage(Resource):
