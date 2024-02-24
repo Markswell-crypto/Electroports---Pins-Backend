@@ -12,14 +12,12 @@ class ReviewsResource(Resource):
     def get(self):
         try:
             reviews = Review.query.all()
+            if not reviews:
+                return {"message": "No reviews found."}, 404
             return {
                 "reviews": [
                     {
                         "id": review.id,
-                        "user_id": review.user_id,
-                        "component_type": review.component_type,
-                        "component_id": review.component_id,
-                        "rating": review.rating,
                         "comment": review.comment,
                         "phone_id": review.phone_id,
                         "laptop_id": review.laptop_id,
@@ -36,10 +34,6 @@ class ReviewsResource(Resource):
         try:
             args = review_parser.parse_args()
             new_review = Review(
-                user_id=args['user_id'],
-                component_type=args['component_type'],
-                component_id=args['component_id'],
-                rating=args['rating'],
                 comment=args['comment'],
                 phone_id=args.get('phone_id'),
                 laptop_id=args.get('laptop_id'),
@@ -52,11 +46,6 @@ class ReviewsResource(Resource):
 
             return {
                 "review": {
-                    "id": new_review.id,
-                    "user_id": new_review.user_id,
-                    "component_type": new_review.component_type,
-                    "component_id": new_review.component_id,
-                    "rating": new_review.rating,
                     "comment": new_review.comment,
                     "phone_id": new_review.phone_id,
                     "laptop_id": new_review.laptop_id,
@@ -87,10 +76,6 @@ class ReviewByIDResource(Resource):
             review = Review.query.get(id)
             if not review:
                 return {"message": "Review not found."}, 404
-            review.user_id = args['user_id']
-            review.component_type = args['component_type']
-            review.component_id = args['component_id']
-            review.rating = args['rating']
             review.comment = args['comment']
             review.phone_id = args.get('phone_id')
             review.laptop_id = args.get('laptop_id')
@@ -99,11 +84,6 @@ class ReviewByIDResource(Resource):
             db.session.commit()
             return {
                 "review": {
-                    "id": review.id,
-                    "user_id": review.user_id,
-                    "component_type": review.component_type,
-                    "component_id": review.component_id,
-                    "rating": review.rating,
                     "comment": review.comment,
                     "phone_id": review.phone_id,
                     "laptop_id": review.laptop_id,
