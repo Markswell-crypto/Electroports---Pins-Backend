@@ -417,9 +417,27 @@ def seed_database():
         ]
         sound_devices = [SoundDevice(**data) for data in sound_devices_data]
 
+        reviews_data = [
+            {
+                "comment": "Great Device, highly recommended.",
+                "phone_id": None,
+                "laptop_id": None,
+                "accessory_id": None,
+                "sound_device_id": None,
+            },
+            {
+                "comment": "Amazing Sound, exceeded my expectations.",
+                "phone_id": None,
+                "laptop_id": None,
+                "accessory_id": None,
+                "sound_device_id": None,
+            },
+        ]
+
+        reviews = [Review(**data) for data in reviews_data]
 
         # Add objects to session and commit changes
-        db.session.add_all(users + brands + phones + laptops + accessories + sound_devices)
+        db.session.add_all(users + brands + phones + laptops + accessories + sound_devices + reviews)
         db.session.commit()
         print("Seeding Successful")
 if __name__ == '__main__':

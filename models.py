@@ -13,7 +13,6 @@ class User(db.Model):
     password = db.Column(db.String(60), nullable=False)
     image_url = db.Column(db.String(255), nullable=True)
     orders = db.relationship('Order', backref='customer', lazy=True)
-    reviews = db.relationship('Review', backref='user', lazy=True)
 
 class Brand(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
@@ -62,10 +61,6 @@ class SoundDevice(db.Model, SerializerMixin):
 
 class Review(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    component_type = db.Column(db.String(20), nullable=False)
-    component_id = db.Column(db.Integer, nullable=False)
-    rating = db.Column(db.Integer, nullable=False)
     comment = db.Column(db.String(150), nullable=False)
     phone_id = db.Column(db.Integer, db.ForeignKey('phone.id'))
     phone = db.relationship('Phone', back_populates='reviews')
