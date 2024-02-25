@@ -85,75 +85,75 @@ class ProfileResource(Resource):
             return {"error": "User not found."}, 404
 
 # User Resource (Get user information)
-# class UserResource(Resource):
-#     @jwt_required()
-#     def get(self):
-#         try:
-#             current_user = get_jwt_identity()
-#             user = User.query.filter_by(email=current_user).first()
+class UserResource(Resource):
+    @jwt_required()
+    def get(self):
+        try:
+            current_user = get_jwt_identity()
+            user = User.query.filter_by(email=current_user).first()
 
-#             if user:
-#                 return {
-#                     "id": user.id,
-#                     "username": user.username,
-#                     "role": user.role,
-#                 }, 200
-#             else:
-#                 return {"message": "User not found."}, 404
-#         except Exception as e:
-#             return {"error": "Failed to retrieve user information."}, 500
+            if user:
+                return {
+                    "id": user.id,
+                    "username": user.username,
+                    "role": user.role,
+                }, 200
+            else:
+                return {"message": "User not found."}, 404
+        except Exception as e:
+            return {"error": "Failed to retrieve user information."}, 500
 
-#     @jwt_required()
-#     def put(self):
-#         try:
-#             current_user = get_jwt_identity()
-#             user = User.query.filter_by(email=current_user).first()
+    @jwt_required()
+    def put(self):
+        try:
+            current_user = get_jwt_identity()
+            user = User.query.filter_by(email=current_user).first()
 
-#             if not user:
-#                 return {"message": "User not found."}, 404
+            if not user:
+                return {"message": "User not found."}, 404
 
-#             # Check if the request contains a file
-#             if 'image' not in request.files:
-#                 return {"error": "No file provided."}, 400
+            # Check if the request contains a file
+            if 'image' not in request.files:
+                return {"error": "No file provided."}, 400
 
-#             # Get the file from the request
-#             image = request.files['image']
+            # Get the file from the request
+            image = request.files['image']
 
-#             # Save the image
-#             if image and allowed_file(image.filename):
-#                 filename = secure_filename(image.filename)
-#                 image.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
-#                 user.image_url = filename
-#                 db.session.commit()
-#                 return {"message": "Image uploaded successfully.", "image_url": filename}, 200
-#             else:
-#                 return {"error": "Invalid image file."}, 400
-#         except BadRequest:
-#             return {"error": "Invalid image file."}, 400
-#         except Exception as e:
-#             return {"error": "Failed to upload image."}, 500
+            # Save the image
+            if image and allowed_file(image.filename):
+                filename = secure_filename(image.filename)
+                image.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
+                user.image_url = filename
+                db.session.commit()
+                return {"message": "Image uploaded successfully.", "image_url": filename}, 200
+            else:
+                return {"error": "Invalid image file."}, 400
+        except BadRequest:
+            return {"error": "Invalid image file."}, 400
+        except Exception as e:
+            return {"error": "Failed to upload image."}, 500
 
-#     @jwt_required()
-#     def delete(self):
-#         try:
-#             current_user = get_jwt_identity()
-#             user = User.query.filter_by(email=current_user).first()
+    @jwt_required()
+    def delete(self):
+        try:
+            current_user = get_jwt_identity()
+            user = User.query.filter_by(email=current_user).first()
 
-#             if not user:
-#                 return {"message": "User not found."}, 404
+            if not user:
+                return {"message": "User not found."}, 404
 
-#             # Delete the user's image file
-#             if user.image_url:
-#                 os.remove(os.path.join(current_app.config['UPLOAD_FOLDER'], user.image_url))
-#                 user.image_url = None
-#                 db.session.commit()
-#                 return {"message": "Image deleted successfully."}, 200
-#             else:
-#                 return {"message": "No image to delete."}, 404
-#         except Exception as e:
-#             return {"error": "Failed to delete image."}, 500
+            # Delete the user's image file
+            if user.image_url:
+                os.remove(os.path.join(current_app.config['UPLOAD_FOLDER'], user.image_url))
+                user.image_url = None
+                db.session.commit()
+                return {"message": "Image deleted successfully."}, 200
+            else:
+                return {"message": "No image to delete."}, 404
+        except Exception as e:
+            return {"error": "Failed to delete image."}, 500
 
-# # Profile Resource (Handle profile updates)
+# Profile Resource (Handle profile updates)
 # class ProfileResource(Resource):
 #     def get(self):
 #         try:
@@ -206,15 +206,15 @@ class ProfileResource(Resource):
 #             return {"error": "Failed to update user profile."}, 500
 
 
-# # Serve User Images
-# class ServeImage(Resource):
-#     def get(self, filename):
-#         try:
-#             return send_from_directory(current_app.config['UPLOAD_FOLDER'], filename)
-#         except FileNotFoundError:
-#             return {"error": "Image not found."}, 404
+# Serve User Images
+class ServeImage(Resource):
+    def get(self, filename):
+        try:
+            return send_from_directory(current_app.config['UPLOAD_FOLDER'], filename)
+        except FileNotFoundError:
+            return {"error": "Image not found."}, 404
 
-# # Helper function to check if file extension is allowed
-# def allowed_file(filename):
-#     return '.' in filename and \
-#            filename.rsplit('.', 1)[1].lower() in {'png', 'jpg', 'jpeg', 'gif'}
+# Helper function to check if file extension is allowed
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in {'png', 'jpg', 'jpeg', 'gif'}
