@@ -59,7 +59,6 @@ class UserLoginResource(Resource):
             logging.exception("An error occurred during login:")
             return {"error": "Failed to log in. Please try again later."}, 500
 
-# Refresh Token Resource
 class RefreshTokenResource(Resource):
     @jwt_required(refresh=True)
     def post(self):
@@ -68,27 +67,7 @@ class RefreshTokenResource(Resource):
             access_token = create_access_token(identity=current_user)
             return {"access_token": access_token}, 200
         except Exception as e:
-            return {"error": "Failed to refresh access token."}, 500
-        
-# Profile Resource
-class ProfileResource(Resource):
-    @jwt_required()
-    def get(self):
-        try:
-            current_user_id = get_jwt_identity()
-            user = User.query.get(current_user_id)
-
-            if user:
-                return {
-                    "id": user.id,
-                    "username": user.username,
-                    "email": user.email,
-                }, 200
-            else:
-                return {"message": "User not found."}, 404
-        except Exception as e:
-            return {"error": "Failed to retrieve user data."}, 500
-        
+            return {"error": "Failed to refresh access token."}, 500              
 # User Resource (Get user information)
 class UserResource(Resource):
     @jwt_required()
@@ -101,7 +80,9 @@ class UserResource(Resource):
                 return {
                     "id": user.id,
                     "username": user.username,
+                    "email" : user.email,
                     "role": user.role,
+                    "image_url" : user.image_url
                 }, 200
             else:
                 return {"message": "User not found."}, 404
@@ -157,58 +138,6 @@ class UserResource(Resource):
                 return {"message": "No image to delete."}, 404
         except Exception as e:
             return {"error": "Failed to delete image."}, 500
-
-# Profile Resource (Handle profile updates)
-# class ProfileResource(Resource):
-#     def get(self):
-#         try:
-#             current_user = get_jwt_identity()
-#             user = User.query.filter_by(email=current_user).first()
-
-#             if user:
-#                 return {
-#                     "id": user.id,
-#                     "username": user.username,
-#                     "email": user.email,
-#                     "image_url": user.image_url
-#                 }, 200
-#             else:
-#                 return {"error": "User not found."}, 404
-#         except Exception as e:
-#             # Log the exception for debugging
-#             logging.exception("An error occurred while retrieving user profile:")
-#             return {"error": "Failed to retrieve user profile."}, 500
-
-#     def put(self):
-#         try:
-#             current_user = get_jwt_identity()
-#             user = User.query.filter_by(email=current_user).first()
-
-#             if not user:
-#                 return {"error": "User not found."}, 404
-
-#             # Update user details
-#             data = request.form
-#             user.username = data.get('username', user.username)
-#             user.email = data.get('email', user.email)
-
-#             # Check if a new image file is provided
-#             if 'image' in request.files:
-#                 image = request.files['image']
-#                 if image and allowed_file(image.filename):
-#                     filename = secure_filename(image.filename)
-#                     image.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
-#                     # Delete old image if exists
-#                     if user.image_url:
-#                         os.remove(os.path.join(current_app.config['UPLOAD_FOLDER'], user.image_url))
-#                     user.image_url = filename
-
-#             db.session.commit()
-#             return {"message": "User profile updated successfully."}, 200
-#         except Exception as e:
-#             # Log the exception for debugging
-#             logging.exception("An error occurred while updating user profile:")
-#             return {"error": "Failed to update user profile."}, 500
 
 
 # Serve User Images
