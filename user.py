@@ -74,16 +74,21 @@ class RefreshTokenResource(Resource):
 class ProfileResource(Resource):
     @jwt_required()
     def get(self):
-        current_user = get_jwt_identity()
-        user = User.query.filter_by(email=current_user).first()
-        if user:
-            return {
-                "username": user.username,
-                "email": user.email,
-            }, 200
-        else:
-            return {"error": "User not found."}, 404
+        try:
+            current_user_id = get_jwt_identity()
+            user = User.query.get(current_user_id)
 
+            if user:
+                return {
+                    "id": user.id,
+                    "username": user.username,
+                    "email": user.email,
+                }, 200
+            else:
+                return {"message": "User not found."}, 404
+        except Exception as e:
+            return {"error": "Failed to retrieve user data."}, 500
+        
 # User Resource (Get user information)
 class UserResource(Resource):
     @jwt_required()
