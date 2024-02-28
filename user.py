@@ -51,7 +51,7 @@ class UserLoginResource(Resource):
             if user and bcrypt.check_password_hash(user.password, password):
                 access_token = create_access_token(identity=user.email)  # Use email as identity
                 refresh_token = create_refresh_token(identity=user.email)
-                return {"access_token": access_token, "refresh_token": refresh_token}, 200
+                return {"access_token": access_token, "refresh_token": refresh_token, "role": user.role}, 200
             else:
                 return {"error": "Invalid email or password."}, 401
         except Exception as e:
