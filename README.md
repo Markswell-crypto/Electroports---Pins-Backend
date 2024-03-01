@@ -5,7 +5,7 @@ This is the ElectroPorts & Pins Backend documentation. Welcome! It includes deta
 Our backend, which is the brains of our application, provides RESTful APIs for managing users, events, and authentication. It uses JSON Web Tokens (JWTs) to handle user authentication and exchange data with the database to store and retrieve data.
 
 # Setup
-    * Prerequisites :
+  * Prerequisites :
  Before setting up the backend, ensure you have the following installed:
 
    * Python
@@ -17,11 +17,11 @@ Our backend, which is the brains of our application, provides RESTful APIs for m
 # Installation
 To install the dependencies, run the following command:
 
-   pip install -r requirements.txt
+    pip install -r requirements.txt
 
 # Running the server
 
-   python app.py
+    python app.py
 
 # Dependencies
 Our backend relies on the following main dependencies:
@@ -32,7 +32,7 @@ Our backend relies on the following main dependencies:
   * SQLAlchemy: SQL toolkit and Object-Relational Mapping (ORM) library for Python.
 
 # Configuration
-    * Environment Variables
+  * Environment Variables
 Sensitive information and configuration settings should be stored in a .env file. Configure the following environment variables:
 
    * DATABASE_URL: Connection string for the database.
@@ -82,17 +82,28 @@ We successfuly deployed our backend on Render Platform. Once deployed, Render pr
  
     https://electroports-db.onrender.com
 
-# Contributors
-The development of this project was led by a talented team of engineers who contributed their skills and expertise to bring the application to life. Meet the dedicated developers behind this project:
+# Developers
+The backend development of this project was led by a dedicated team of developers, each contributing their unique skills and expertise to build the core functionalities of the application. Meet the talented members of our backend development team and their respective roles:
 
-<a href="https://github.com/Markswell-crypto">Markswell Ogutu</a>, The Scrum Master
-<a href="https://github.com/Leonkaigit">Leon Gitonga</a>, Assistant Scrum Master
-<a href="https://github.com/JOYCEmwangi8880">Joyce Mwangi</a>
-<a href="https://github.com/Gerald-GG">Gerald Gicharu</a>
-<a href="https://github.com/MMer-cy123">Mercy Mwongeli</a>
-<a href="https://github.com/mulindijr">Brian Mulindi</a>
+Markswell Ogutu - Backend Lead Engineer
+ * GitHub: <a href="https://github.com/Markswell-crypto">Markswell-crypto</a>
 
-Together, we collaborated closely, overcoming challenges and turning ideas into reality. Our collective efforts and dedication have been instrumental in the success of this project.
+Leon Gitonga - Assistant Backend Lead Engineer
+ * GitHub: <a href="https://github.com/Leonkaigit">Leonkaigit</a>
+
+Joyce Mwangi - Database Architect
+ * GitHub: <a href="https://github.com/JOYCEmwangi8880">JOYCEmwangi8880</a>
+
+Gerald Gicharu - Backend Engineer
+ * GitHub: <a href="https://github.com/Gerald-GG">Gerald-GG</a>
+
+Mercy Mwongeli - API Developer
+ * GitHub: <a href="https://github.com/MMer-cy123">MMer-cy123</a>
+
+Brian Mulindi - Backend Developer
+ * GitHub: <a href="https://github.com/mulindijr">mulindijr</a>
+
+Together, we collaborated closely, leveraging our individual strengths and skills to develop robust backend solutions, ensuring the functionality, security, and performance of the application. Our combined efforts have been instrumental in the success of our backend development efforts.
 
 # Contributing
 We welcome contributions from the community! Follow our contribution guidelines and coding standards when submitting pull requests or reporting issues.
